@@ -157,8 +157,8 @@
                     <label class="block mb-2 text-sm font-medium">Condição:</label>
                     <select x-model="filtroCondicao" class="w-full p-2 border rounded">
                         <option value="Todas">Todas as condições</option>
-                        <option value="Novo">Novo</option>
-                        <option value="Usado">Usado</option>                       
+                        <option value="novo">Novo</option>
+                        <option value="usado">Usado</option>                       
                     </select>
                 </div>
             </aside>
