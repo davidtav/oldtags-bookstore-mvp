@@ -119,10 +119,17 @@ document.addEventListener('alpine:init', () => {
             this.isCheckingOut = false;
 
             if (response.ok) {
-                alert('Pedido finalizado com sucesso! (Verifique o console do Laravel)');
-                localStorage.removeItem('oldtags_cart');
-                this.cart = [];
-                window.location.href = '/';
+              const data = await response.json();
+                    console.group('🛒 Pedido Finalizado');
+                    console.log('✅ Pedido processado com sucesso!');
+                    console.log('Itens enviados:', this.cart.length);
+                    console.log('Total:', `R$ ${this.totalPrice.toFixed(2).replace('.', ',')}`);
+                    console.log('ID do Pedido:', data.order_id);
+                    console.groupEnd();
+                    alert('Pedido finalizado com sucesso! (Verifique o console do navegador)');
+                    localStorage.removeItem('oldtags_cart');
+                    this.cart = [];
+                    window.location.href = '/';
             } else {
                 alert('Erro ao finalizar o pedido. Verifique o console.');
             }
