@@ -158,8 +158,7 @@
                     <select x-model="filtroCondicao" class="w-full p-2 border rounded">
                         <option value="Todas">Todas as condições</option>
                         <option value="Novo">Novo</option>
-                        <option value="Bom">Bom</option>
-                        <option value="Aceitável">Aceitável</option>
+                        <option value="Usado">Usado</option>                       
                     </select>
                 </div>
             </aside>
