@@ -43,20 +43,25 @@ Certifique-se de que você tem: PHP (v8.1+), Composer, e ambiente de servidor (L
 
 ### 2. Clonar e Instalar
 
-```bash
+
 # 1. Clone o repositório (o projeto Laravel)
+```bash
 git clone [URL_DO_SEU_REPOSITORIO] oldtags-bookstore-mvp
 cd oldtags-bookstore-mvp
-
+```
 # 2. Instalar dependências do PHP
+```bash
 composer install
+```
 
 # 3. Configurar o ambiente
+```bash
 cp .env.example .env
-
+```
 # 4. Gerar chave da aplicação
+```bash
 php artisan key:generate
-
+```
 # 5. Configuração do Supabase
 Para conectar o catálogo ao banco de dados, você precisa de um projeto Supabase configurado:
 
@@ -65,15 +70,19 @@ Crie uma conta no Supabase e configure a tabela livros com as colunas essenciais
 Desative o RLS (Row Level Security) na tabela livros para permitir que o frontend leia os dados publicamente.
 
 Adicione as chaves de conexão ao seu arquivo .env:
-
+```bash
 SUPABASE_URL="SEU_URL_DO_PROJETO"
 SUPABASE_KEY="SUA_CHAVE_PÚBLICA_ANON"
+```
 
 # 6. Executar o Projeto
 # Limpar cache de configuração após alterar o .env
+```bash
 php artisan config:clear
+```
 
 # Iniciar o servidor
+```bash
 php artisan serve
-
+```
 A aplicação estará acessível em http://127.0.0.1:8000.
