@@ -31,7 +31,7 @@
                 <template x-for="item in cart" :key="item.id">
                     <div class="flex items-center bg-white p-4 rounded-lg shadow-sm">
                         <img :src="item.capa_url || 'https://via.placeholder.com/80x120'" :alt="item.titulo" class="w-20 h-24 object-cover rounded mr-4">
-                        <div class="flex-grow">
+                        <div class="grow">
                             <h3 class="text-lg font-semibold" x-text="item.titulo"></h3>
                             <p class="text-gray-600 text-sm" x-text="'Autor: ' + item.autor"></p>
                             <p class="text-sm font-bold text-orange-600" x-text="'R$ ' + item.preco"></p>
