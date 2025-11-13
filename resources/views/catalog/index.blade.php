@@ -3,8 +3,8 @@
 @section('content')
 <script>
     // 1. Defina as constantes globalmente
-    const SUPABASE_URL = 'https://meylzxetnzkpuusmnsom.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1leWx6eGV0bnprcHV1c21uc29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3ODc3OTgsImV4cCI6MjA3ODM2Mzc5OH0.nT1iHe3V0BdkcblMHx05HDdTHy4skHC0mRgb-HCa2p4';
+  const SUPABASE_URL = '{{ env('SUPABASE_URL') }}';
+  const SUPABASE_KEY = '{{ env('SUPABASE_KEY') }}';
 
     // 2. Variável para o cliente Supabase
     let supabaseClient = null;
