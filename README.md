@@ -1,79 +1,117 @@
-# 📚 OldTags Bookstore MVP
+# 📚 OldTags Bookstore — MVP
 
-Uma loja virtual de livros usados de tecnologia construída como um Mínimo Produto Viável (MVP) em um **ambiente de estudo e prototipagem**. O projeto foi desenvolvido para testar a integração entre ferramentas de **Low-Code/No-Code** e o desenvolvimento tradicional (Laravel/PHP).
+![Laravel](https://img.shields.io/badge/Laravel-v12-red?logo=laravel)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.0-blue?logo=tailwindcss)
+![Supabase](https://img.shields.io/badge/Supabase-BaaS-green?logo=supabase)
+![License](https://img.shields.io/badge/License-MIT-yellow?logo=open-source-initiative)
 
-A **Interface de Usuário (UI)** foi iniciada usando a plataforma de IA generativa **Lovable**, e o código resultante foi adaptado e integrado a uma stack moderna: Laravel, Supabase, Tailwind e Alpine.js.
+Uma **loja virtual de livros usados de tecnologia**, construída como um **Mínimo Produto Viável (MVP)** em um ambiente de **estudo e prototipagem**.
 
-O repositório original da UI gerada pelo Lovable pode ser encontrado aqui: [https://github.com/davidtav/oldtags](https://github.com/davidtav/oldtags)
+O objetivo deste projeto é explorar a integração entre ferramentas de **Low-Code/No-Code** e o desenvolvimento tradicional com **Laravel/PHP**.
 
-***
+A **Interface de Usuário (UI)** foi inicialmente criada com a plataforma de IA generativa **Lovable**, e posteriormente adaptada e integrada a uma stack moderna:
 
-## 🚀 Stack Tecnológica Principal
+> **Laravel**, **Supabase**, **Tailwind CSS** e **Alpine.js**.
 
-Este projeto utiliza o conceito de *Composable Architecture*, combinando ferramentas *server-side* e *client-side* para máxima agilidade.
+🔗 Repositório original da UI gerada pelo Lovable:  
+[github.com/davidtav/oldtags](https://github.com/davidtav/oldtags)
 
-| Componente | Tecnologia | Função no Projeto |
+---
+
+## 🚀 Stack Tecnológica
+
+O projeto segue o conceito de **Composable Architecture**, combinando ferramentas *server-side* e *client-side* para maior agilidade no desenvolvimento.
+
+| Componente | Tecnologia | Função |
 | :--- | :--- | :--- |
-| **Backend / Core** | **Laravel (PHP)** | Gerenciamento de rotas e processamento simulado do Checkout (`/api/checkout`). |
+| **Backend / Core** | **Laravel (PHP)** | Gerencia rotas e processa o Checkout simulado (`/api/checkout`). |
 | **Frontend Rendering** | **Blade (Laravel)** | Renderização das *views* (Catálogo e Carrinho). |
-| **Data & Auth (BaaS)** | **Supabase** | Backend as a Service (BaaS) para o banco de dados (`livros`) e API REST. |
-| **Interatividade (JS)** | **Alpine.js** | Gerenciamento de estado (*state management*), filtros e lógica de carrinho no *frontend*. |
-| **Estilização (CSS)** | **Tailwind CSS** | Framework *utility-first* para design responsivo e rápido. |
+| **Data & Auth (BaaS)** | **Supabase** | Banco de dados e API REST para os livros. |
+| **Interatividade (JS)** | **Alpine.js** | Gerencia estados, filtros e lógica do carrinho no *frontend*. |
+| **Estilização (CSS)** | **Tailwind CSS** | Framework *utility-first* para design responsivo. |
 
-***
+---
 
 ## 💻 Funcionalidades do MVP
 
-As funcionalidades atuais do projeto cobrem o ciclo de compra básico:
+As funcionalidades atuais cobrem o ciclo básico de compra:
 
-* **Catálogo Dinâmico:** Exibição de livros buscados em tempo real do Supabase.
-* **Filtros & Busca:** Funcionalidade de busca por título/autor e filtro por condição (`Novo`, `Usado`) em tempo real (via Alpine.js).
-* **Carrinho Local:** Adição e remoção de itens, com persistência dos dados no **LocalStorage** (`oldtags_cart`).
-* **Checkout Simulado:** O botão "Finalizar Compra" envia o pedido (JSON) para o endpoint do Laravel, que loga os detalhes do pedido no servidor (terminal).
+- 🧾 **Catálogo Dinâmico:** Exibe livros em tempo real a partir do Supabase.  
+- 🔍 **Busca & Filtros:** Pesquisa por título/autor e filtro por condição (`Novo` / `Usado`) em tempo real.  
+- 🛒 **Carrinho Local:** Adição, remoção e persistência dos itens via **LocalStorage** (`oldtags_cart`).  
+- 💳 **Checkout Simulado:** Envio de pedidos (JSON) para o endpoint Laravel, com log do pedido no terminal.
 
-***
+---
 
 ## ⚙️ Instalação e Configuração Local
 
-Siga estas instruções para colocar o projeto em funcionamento em sua máquina:
+### 🧰 1. Pré-requisitos
 
-### 1. Pré-requisitos
+Certifique-se de ter instalado:
 
-Certifique-se de que você tem: PHP (v8.1+), Composer, e ambiente de servidor (Laragon, XAMPP, etc.).
+- PHP **v8.1+**
+- **Composer**
+- Um ambiente de servidor (ex: **Laragon**, **XAMPP**, etc.)
 
-### 2. Clonar e Instalar
+---
+
+### 📦 2. Clonar e Instalar o Projeto
 
 ```bash
-# 1. Clone o repositório (o projeto Laravel)
-git clone [URL_DO_SEU_REPOSITORIO] oldtags-bookstore-mvp
+git clone https://github.com/davidtav/oldtags-bookstore-mvp.git
 cd oldtags-bookstore-mvp
-
-# 2. Instalar dependências do PHP
 composer install
+```
 
-# 3. Configurar o ambiente
+---
+
+### ⚙️ 3. Configurar o Ambiente
+
+Crie o arquivo de ambiente e gere a chave da aplicação:
+
+```bash
 cp .env.example .env
-
-# 4. Gerar chave da aplicação
 php artisan key:generate
+```
 
-# 5. Configuração do Supabase
-Para conectar o catálogo ao banco de dados, você precisa de um projeto Supabase configurado:
+---
 
-Crie uma conta no Supabase e configure a tabela livros com as colunas essenciais: id, titulo, autor, preco, condicao, capa_url.
+### 🗄️ 4. Configurar o Supabase
 
-Desative o RLS (Row Level Security) na tabela livros para permitir que o frontend leia os dados publicamente.
+Para conectar o catálogo ao banco de dados:
 
-Adicione as chaves de conexão ao seu arquivo .env:
+1. Crie um projeto no **Supabase**.
+2. Crie a tabela `livros` com as colunas:
+   - `id`, `titulo`, `autor`, `preco`, `condicao`, `capa_url`
+3. Desative o **RLS (Row Level Security)** para permitir leitura pública.
+4. Adicione suas credenciais ao arquivo `.env`:
 
+```bash
 SUPABASE_URL="SEU_URL_DO_PROJETO"
 SUPABASE_KEY="SUA_CHAVE_PÚBLICA_ANON"
+```
 
-# 6. Executar o Projeto
-# Limpar cache de configuração após alterar o .env
+---
+
+### 🧹 5. Limpar Cache e Iniciar o Servidor
+
+```bash
 php artisan config:clear
-
-# Iniciar o servidor
 php artisan serve
+```
 
-A aplicação estará acessível em http://127.0.0.1:8000.
+A aplicação estará disponível em:  
+👉 **http://127.0.0.1:8000**
+
+---
+
+## 👨‍💻 Autor
+
+**[David Mclaurel](https://www.linkedin.com/in/david-mclaurel/)**  
+
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença [MIT](./LICENSE).
