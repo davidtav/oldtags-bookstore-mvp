@@ -1,151 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
-    <script>
-        // 1. Defina as constantes globalmente
-        const SUPABASE_URL = '{{ env('SUPABASE_URL') }}';
-        const SUPABASE_KEY = '{{ env('SUPABASE_KEY') }}';
 
-        // 2. Variável para o cliente Supabase
-        let supabaseClient = null;
+<div 
+    x-data="catalogoData({ livrosIniciais: {{ json_encode($livros) }} })"
+    class="min-h-screen bg-background"
+>
 
-        // INICIALIZA O SUPABASE ASSIM QUE DISPONÍVEL
-        (function waitForSupabase() {
-            if (typeof supabase !== 'undefined') {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                console.log('✅ Supabase inicializado com sucesso!');
-            } else {
-                console.log('⏳ Aguardando Supabase carregar...');
-                setTimeout(waitForSupabase, 50);
-            }
-        })();
-
-        // OUVINTE DE EVENTO PARA GARANTIR QUE ALPINE ESTEJA PRONTO
-        document.addEventListener('alpine:init', () => {
-            console.log('🎨 Inicializando Alpine.js component...');
-
-            Alpine.data('catalogoData', () => ({
-                // Variáveis de Estado
-                livros: [],
-                searchTerm: '',
-                filtroCondicao: 'Todas',
-                cart: [],
-                isLoading: false,
-
-                // Inicialização
-                init() {
-                    // Carrega o carrinho do localStorage
-                    const savedCart = localStorage.getItem('oldtags_cart');
-                    if (savedCart) {
-                        try {
-                            this.cart = JSON.parse(savedCart);
-                        } catch (e) {
-                            console.error('Erro ao carregar carrinho:', e);
-                            this.cart = [];
-                        }
-                    }
-                    // Busca os livros
-                    this.fetchLivros();
-                },
-
-                // FUNÇÃO DE BUSCA
-                async fetchLivros() {
-                    // Aguarda o Supabase estar pronto
-                    const maxWait = 50; // 5 segundos
-                    let waited = 0;
-                    while (!supabaseClient && waited < maxWait) {
-                        console.log('⏳ Aguardando Supabase inicializar...');
-                        await new Promise(resolve => setTimeout(resolve, 100));
-                        waited++;
-                    }
-
-                    if (!supabaseClient) {
-                        console.error('❌ Supabase não inicializou a tempo!');
-                        alert('Erro ao inicializar sistema. Por favor, recarregue a página.');
-                        this.isLoading = false;
-                        return;
-                    }
-
-                    this.isLoading = true;
-
-                    try {
-                        console.log('🔍 Buscando livros no Supabase...');
-
-                        const {
-                            data,
-                            error
-                        } = await supabaseClient
-                            .from('livros')
-                            .select('id, titulo, autor, preco, condicao, capa_url');
-
-                        if (error) {
-                            console.error('❌ Erro de Supabase:', error);
-                            alert(
-                                `Erro ao carregar dados!\n\nDetalhe: ${error.message}\n\nVerifique:\n1. A tabela 'livros' existe?\n2. As políticas RLS permitem leitura pública?`
-                            );
-                            this.livros = [];
-                        } else {
-                            this.livros = data || [];
-                            console.log(`✅ Sucesso! ${this.livros.length} livros carregados.`,
-                                data);
-                        }
-                    } catch (e) {
-                        console.error("❌ Erro fatal na execução:", e);
-                        alert(`Erro inesperado: ${e.message}`);
-                        this.livros = [];
-                    } finally {
-                        this.isLoading = false;
-                    }
-                },
-
-                // Lógica do Carrinho
-                addToCart(livro) {
-                    // Verifica se o livro já está no carrinho
-                    const exists = this.cart.find(item => item.id === livro.id);
-                    if (!exists) {
-                        this.cart.push(livro);
-                        localStorage.setItem('oldtags_cart', JSON.stringify(this.cart));
-                        alert('Livro adicionado ao carrinho!');
-                    } else {
-                        alert('Este livro já está no carrinho!');
-                    }
-                },
-
-                // Propriedade Computada (Filtros)
-                get livrosFiltrados() {
-                    return this.livros.filter(livro => {
-                        const matchSearch = livro.titulo.toLowerCase().includes(this
-                                .searchTerm.toLowerCase()) ||
-                            livro.autor.toLowerCase().includes(this.searchTerm
-                                .toLowerCase());
-                        const matchCondicao = this.filtroCondicao === 'Todas' || livro
-                            .condicao === this.filtroCondicao;
-                        return matchSearch && matchCondicao;
-                    });
-                },
-            }));
-        });
-    </script>
-
-   <div x-data="catalogoData" x-init="fetchLivros" class="min-h-screen bg-background">
-
+    {{-- HEADER --}}
     <header class="bg-blue-700 text-white shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <h2 class="text-xl font-bold">OldTags bookstore</h2>
 
             <a href="/cart" class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span x-text="cart.length"
-                    class="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+
+                {{-- BADGE DO CARRINHO --}}
+                <span 
+                    x-text="cart.length"
+                    class="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full 
+                           h-5 w-5 flex items-center justify-center font-bold">
+                </span>
             </a>
         </div>
     </header>
 
+    {{-- CONTEÚDO PRINCIPAL --}}
     <main class="container mx-auto px-4 py-8">
+
+        {{-- TÍTULO + SUBTÍTULO --}}
         <div class="mb-8">
             <h1 class="text-4xl font-bold text-foreground mb-2">
                 Livros Usados de Tecnologia
@@ -156,16 +43,25 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+            {{-- FILTROS --}}
             <aside class="lg:col-span-1">
                 <div class="p-4 border rounded shadow bg-white">
                     <h3 class="font-bold text-lg mb-4">Filtros</h3>
 
                     <label class="block mb-2 text-sm font-medium">Buscar Livros:</label>
-                    <input type="text" x-model.debounce.300ms="searchTerm" class="w-full p-2 border rounded mb-4"
-                        placeholder="Título, Autor...">
+                    <input 
+                        type="text" 
+                        x-model.debounce.300ms="searchTerm" 
+                        class="w-full p-2 border rounded mb-4"
+                        placeholder="Título, Autor..."
+                    >
 
                     <label class="block mb-2 text-sm font-medium">Condição:</label>
-                    <select x-model="filtroCondicao" class="w-full p-2 border rounded">
+                    <select 
+                        x-model="filtroCondicao" 
+                        class="w-full p-2 border rounded"
+                    >
                         <option value="Todas">Todas as condições</option>
                         <option value="novo">Novo</option>
                         <option value="usado">Usado</option>
@@ -173,37 +69,60 @@
                 </div>
             </aside>
 
+            {{-- LISTAGEM DE LIVROS --}}
             <div class="lg:col-span-3">
-                <div x-show="isLoading" class="text-center py-12">
-                    <p class="text-xl text-muted-foreground">Carregando catálogo...</p>
-                </div>
 
-                <div x-show="!isLoading && livrosFiltrados.length === 0" class="text-center py-12">
+                {{-- NENHUM LIVRO --}}
+                <div 
+                    x-show="livrosFiltrados.length === 0" 
+                    class="text-center py-12"
+                >
                     <p class="text-xl text-muted-foreground">
                         Nenhum livro encontrado com os filtros selecionados.
                     </p>
                 </div>
 
-                <div x-show="!isLoading && livrosFiltrados.length > 0"
-                    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {{-- GRID DE LIVROS --}}
+                <div 
+                    x-show="livrosFiltrados.length > 0"
+                    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                >
                     <template x-for="book in livrosFiltrados" :key="book.id">
                         <div
-                            class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow">
-                            
-                            {{-- AJUSTE DA IMAGEM: Contêiner de altura fixa + object-contain --}}
-                            <div class="w-full h-64 flex items-center justify-center bg-gray-100 p-4"> 
-                                <img :src="book.capa_url" :alt="book.titulo" 
-                                     class="max-h-full max-w-full object-contain">
+                            class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow"
+                        >
+                            <div class="w-full h-64 flex items-center justify-center bg-gray-100 p-4">
+                                <img 
+                                    :src="book.capa_url" 
+                                    :alt="book.titulo"
+                                    class="max-h-full max-w-full object-contain"
+                                >
                             </div>
 
                             <div class="p-4">
-                                <h3 class="text-lg font-semibold mb-1 line-clamp-2" x-text="book.titulo"></h3>
-                                <p class="text-sm text-gray-500 mb-2" x-text="'Autor: ' + book.autor"></p>
-                                <p class="text-xl font-bold text-orange-600 mb-1" x-text="'R$ ' + book.preco"></p>
-                                <p class="text-xs text-gray-600 mb-3" x-text="'Condição: ' + book.condicao"></p>
+                                <h3 
+                                    class="text-lg font-semibold mb-1 line-clamp-2" 
+                                    x-text="book.titulo"
+                                ></h3>
 
-                                <button @click="addToCart(book)"
-                                    class="mt-2 w-full bg-blue-700 text-white p-2 rounded hover:bg-blue-800 transition font-medium">
+                                <p class="text-sm text-gray-500 mb-2">
+                                    Autor: <span x-text="book.autor"></span>
+                                </p>
+
+                                <p class="text-xl font-bold text-orange-600 mb-1">
+                                    R$ <span x-text="book.preco"></span>
+                                </p>
+
+                                <p class="text-xs text-gray-600 mb-3">
+                                    Condição: <span x-text="book.condicao"></span>
+                                </p>
+
+                                {{-- BOTÃO DE CARRINHO --}}
+                                <button 
+                                    @click="addToCart(book)"
+                                    class="mt-2 w-full bg-blue-700 text-white p-2 rounded 
+                                           hover:bg-blue-800 transition font-medium"
+                                >
                                     Adicionar ao Carrinho
                                 </button>
                             </div>
@@ -212,6 +131,62 @@
                 </div>
             </div>
         </div>
+
     </main>
 </div>
+
+<script>
+document.addEventListener("alpine:init", () => {
+    
+    Alpine.data("catalogoData", (props) => ({
+
+        // Dados do Laravel
+        livros: props.livrosIniciais,
+
+        // Filtros
+        searchTerm: "",
+        filtroCondicao: "Todas",
+
+        // Carrinho
+        cart: [],
+
+        // Inicialização
+        init() {
+            const saved = localStorage.getItem("oldtags_cart");
+            if (saved) {
+                this.cart = JSON.parse(saved);
+            }
+        },
+
+        // Adicionar ao carrinho
+        addToCart(livro) {
+            if (!this.cart.find(item => item.id === livro.id)) {
+                this.cart.push(livro);
+                localStorage.setItem("oldtags_cart", JSON.stringify(this.cart));
+                alert("Livro adicionado ao carrinho!");
+            } else {
+                alert("Este livro já está no carrinho!");
+            }
+        },
+
+        // Filtro computado
+        get livrosFiltrados() {
+            return this.livros.filter(livro => {
+
+                const texto = (livro.titulo + " " + livro.autor).toLowerCase();
+                const busca = this.searchTerm.toLowerCase();
+
+                const condicaoOK =
+                    this.filtroCondicao === "Todas" ||
+                    livro.condicao === this.filtroCondicao;
+
+                return texto.includes(busca) && condicaoOK;
+            });
+        },
+
+    }));
+
+});
+</script>
+
 @endsection
