@@ -20,7 +20,12 @@ class SupabaseService
         return Http::withHeaders([
             'apikey'        => $this->key,
             'Authorization' => "Bearer {$this->key}",
-            'Content-Type'  => 'application/json',
-        ])->baseUrl("{$this->url}/rest/v1/{$table}");
+        ])
+        ->baseUrl("{$this->url}/rest/v1")
+        ->acceptJson()
+        ->withQueryParameters([
+            'select' => '*',
+        ])
+        ->get($table);
     }
 }
