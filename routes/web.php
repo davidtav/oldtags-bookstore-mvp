@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\GoogleController;
+
 
 // Página inicial → agora carrega via Controller
 Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
@@ -16,7 +18,6 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
-// Área Admin (ainda sem proteção)
-Route::get('/admin/dashboard', function () {   
-    return view('admin.dashboard'); 
-});
+// Autenticação via Google
+Route::get('/auth/google', [GoogleController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
